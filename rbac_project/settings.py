@@ -1,5 +1,5 @@
 # ==========================================
-# 1. rbac_project/settings.py
+# 1. rbac_project/settings.py (UPDATED)
 # ==========================================
 from pathlib import Path
 from datetime import timedelta
@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.forms',  # ← ADD THIS LINE (FIX FOR TEMPLATE ERROR)
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -89,6 +90,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# ← ADD THIS LINE (FIX FOR TEMPLATE ERROR)
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
