@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Welcome, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}! 
+        <span class="badge bg-primary">{{ user.role|upper }}</span>
+    </h2>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>Quick Actions</h5>
+        </div>
+        <div class="card-body">
+            <a href="/profile/" class="btn btn-primary me-2">
+                <i class="fas fa-user"></i> View Profile
+            </a>
+            
+            {% if user.role == 'admin' %}
+            <a href="/users/" class="btn btn-success me-2">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+            {% endif %}
+            
+            {% if user.role == 'admin' or user.role == 'manager' %}
+            <a href="/projects/" class="btn btn-info me-2">
+                <i class="fas fa-project-diagram"></i> Manage Projects
+            </a>
+            {% endif %}
+            
+            <a href="/tasks/" class="btn btn-warning">
+                <i class="fas fa-tasks"></i> My Tasks
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

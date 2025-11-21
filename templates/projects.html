@@ -1,0 +1,46 @@
+<!-- ==========================================
+     templates/projects.html
+     ========================================== -->
+{% extends 'base.html' %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Projects</h2>
+        {% if user.role in 'admin,manager' %}
+        <button class="btn btn-success">
+            <i class="fas fa-plus"></i> New Project
+        </button>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ project.name }}</h5>
+                    <span class="badge bg-info">{{ project.status|upper }}</span>
+                </div>
+                <div class="card-body">
+                    <p>{{ project.description|truncatewords:20 }}</p>
+                    <p><strong>Created by:</strong> {{ project.created_by.username }}</p>
+                    <p><strong>Team:</strong> {{ project.team_members.count }} members</p>
+                    <p><strong>Tasks:</strong> {{ project.tasks.count }}</p>
+                </div>
+                <div class="card-footer">
+                    <small>Created: {{ project.created_at|date:"M d, Y" }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No projects found.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

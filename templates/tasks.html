@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">My Tasks</h2>
+    
+    <div class="row">
+        {% for task in tasks %}
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                    <h5>{{ task.title }}</h5>
+                    <span class="badge {% if task.status == 'done' %}bg-success{% elif task.status == 'in_progress' %}bg-warning{% else %}bg-secondary{% endif %}">
+                        {{ task.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>{{ task.description }}</p>
+                    <p><strong>Project:</strong> {{ task.project.name }}</p>
+                    <p><strong>Priority:</strong> 
+                        <span class="badge {% if task.priority == 'high' %}bg-danger{% elif task.priority == 'medium' %}bg-warning{% else %}bg-info{% endif %}">
+                            {{ task.get_priority_display }}
+                        </span>
+                    </p>
+                    {% if task.due_date %}
+                    <p><strong>Due:</strong> {{ task.due_date|date:"M d, Y" }}</p>
+                    {% endif %}
+                    
+                    {% if user.role == 'user' %}
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-secondary" onclick="updateTaskStatus({{ task.id }}, 'todo')">To Do</button>
+                        <button class="btn btn-sm btn-warning" onclick="updateTaskStatus({{ task.id }}, 'in_progress')">In Progress</button>
+                        <button class="btn btn-sm btn-success" onclick="updateTaskStatus({{ task.id }}, 'done')">Done</button>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <small>Created: {{ task.created_at|date:"M d, Y" }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No tasks assigned to you.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateTaskStatus(taskId, status) {
+        fetch('/api/tasks/api/' + taskId + '/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ status: status })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Task status updated!');
+            location.reload();
+        })
+        .catch(err => {
+            alert('Error updating task');
+            console.error(err);
+        });
+    }
+</script>
+{% endblock %}
